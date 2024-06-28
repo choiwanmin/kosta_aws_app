@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
+<script type="text/javascript">
+// https://luckyguystory.tistory.com/205
+// let obj = {oid:'[[${session.loginId }]]',store:'[[${list[0].store.storeid }]]',items:[], payment:0};
+// let obj2 = {oid:'[[${session.loginId }]]',store:'[[${list[0].store.storeid }]]',items:[], payment:0};
+let payment = 0;
+let cnt = 0;
+$(document).ready(function(){
+// 	alert(obj.oid);
+// 	alert(obj.store);
+// 	$('#olist').hide();
+	$('.add').click(function(){
+		let num = $(this).attr('num'); //>>클래스로 작동하기에 파람을 직접 넣어줄 수 없기에 필요한 값을 받아옴, 요소를 설정하거나 읽어서 여기서는 속성을 읽어오라는 의미,  
+		alert(num);
+		let name = $('#name_' + num).text();
+		let price = $('#price_' + num).text();
+		let amount = $('#amount_' + num).val();
+		alert('amount:' + amount);
+		let txt = $('#olist').html();
+		txt += 'name:' + name + ' / amount:' + amount + ' * ' + price + '(' + (amount * price) + ')';
+		txt += '<input type="button" value="삭제" class="del">';
+		txt += '<br/>';
+		$('#olist').html(txt);
+		let item = {};
+		item.prod = num;
+		item.amount = parseInt(amount);
+		payment += amount * price;
+// 		obj.items.append(item); //>>배열 뒤에 추가하는 함수
+// 		obj.items += item;
+// 		obj.items.push(item);
+		$('#pay').text(payment);
+// 		console.log(obj);
+		let html = '<input type="hidden" name="items[' + cnt + '].prod" value="' + num + '">';
+		html += '<input type="hidden" name="items[' + cnt + '].prod" value="' + amount + '">';
+		let src = $('#f').html();
+		$('#f').html(src + html);
+		cnt++;
+	});
+	$('#res').click(function(){
+// 		obj.payment = payment;
+// 		let arr = JSON.stringify(obj.items);
+// 		console.log(obj);	
+// 		obj.
+// 		$.ajax({
+// 			url : '/auth/order/add',
+// 			type : 'post',
+// 			data : obj,
+// 			async : false,
+// 			dataType : 'json',
+// 			success : function(res) {
+// 				alert(res);
+// 			},
+// 			error : function() {
+// 				alert('error');
+// 			}
+// 		});
+		f.payment.value = payment;
+		f.submit();
+	});
+});
+// let cnt = 0;
+// let payment = 0;
+// $('#addprod').click(function(prodnum){
+// 	let img = $('#img_+"prodnum"').html();
+// 	let name = $('#name_+"prodnum"').html();
+// 	let amount = $('#amount_+"prodnum"').html();
+// 	let price = $('#price_+"prodnum"').html();
+// 	let txt = '<table id="div_' + cnt + "'>';
+// 	txt += '<tr><th>상품이미지</th>';
+// 	txt += '<th>상품명</th>';
+// 	txt += '<th>가격</th>';
+// 	txt += '<th>주문수량</th>';
+// 	txt += '<th>결제금액</th></tr>';
+// 	txt += '<tr><td>' + img + '</td>';
+// 	txt += '<td>' + name + '</td>';
+// 	txt += '<td>' + price + '</td>';
+// 	txt += '<td>' + amount + '</td>';
+// 	txt += '<td>' + price * amount + '</td>';
+// 	txt += '<td><input type="button" value="상품삭제" onclick="delprod()"></td></tr>';
+// 	txt += '</table>';
+// 	payment += price * amount;
+// 	$('#olist').append(txt);
+// 	let txt2 = '<input type="hidden" name="items[' + cnt + '].prod" value="' + prodnum + '">';
+// 	txt2 += '<input type="hidden" name="items[' + cnt + '].amount" value="' + amount + '">';
+// 	let form = $('#f').append(txt2);
+// 	$('#pay').val(pay);
+// 	cnt++;
+	
+// });
+$('#delprod').click(function(prodnum){
+	$('#div_+"prodnum"').remove();
+});
+</script>
+</head>
+<body>
+<h3>cafe security session</h3>
+<h3>카페 주문 페이지</h3>
+<a href="/index_consumer">구매자 홈으로</a><br/>
+<table border="1">
+<tr><th>상품이미지</th><th>상품명</th><th>가격</th><th>주문수량</th></tr>
+<tr th:each="cp:${list }">
+<td><img src="@{/auth/cafe/read-img(fname=${cp.fname })}" th:id="${'img_'+cp.num}" style="width:100px;height:100px"></td>
+	<td th:text="${cp.name }" th:id="${'name_'+cp.num}"><a href=""></a></td>
+	<td th:text="${cp.price }" th:id="${'price_'+cp.num}"></td>
+	<td><input type="number" th:id="${'amount_'+cp.num}">
+	<input type="button" value="추가" class="add" th:num="${cp.num}"></td>
+</tr>
+</table>
+<h5>주문항목 <br/>결제금액:<span id="pay">0</span><input type="button" value="결제" id="res"></h5>
+<div id="olist">
+</div>
+<form action="/auth/order/add" method="post" style="display:none" id="f">
+<input type="hidden" name="oid" th:value="${session.loginId }">
+<input type="hidden" name="store" th:value="${list[0].store.storeid }">
+<input type="hidden" name="payment">
+</form>
+</body>
+</html>

@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+</head>
+<body>
+<h3>cafe security session</h3>
+<h4>카페 상품 목록 페이지</h4>
+<a href="/index_seller">판매자 홈으로</a><br/>
+<table border="1">
+<tr><th>상품명</th><th>가격</th><th>사진</th></tr>
+<tr th:each="cp:${list }">
+	<td><img src="@{/auth/cafe/read-img(fname=${cp.fname })}" style="width:100px;height:100px"></td>
+	<td th:text="${cp.name }"><a href=""></a></td>
+	<td th:text="${cp.price }"></td>
+</tr>
+</table>
+</body>
+</html>

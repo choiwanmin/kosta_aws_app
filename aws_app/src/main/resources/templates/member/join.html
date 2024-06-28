@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+<script type="text/javascript">
+let flag = false;
+
+//>>제이쿼리로 바꾼다면
+const a = () => {
+	flag = false;
+	const req = new XMLHttpRequest();
+	req.onload = () => {
+		let obj = JSON.parse(req.responseText);//req.responseText => {flag:true}
+		let txt = '중복된 아이디';
+		if(obj.flag){
+			txt = '사용가능 아이디';
+			flag = true;
+		}
+		document.getElementById('res').innerHTML = txt;
+	}
+	let id = document.getElementById('id').value;
+	req.open('get', '/idcheck?id=' + id);
+	req.send();
+}
+</script>
+</head>
+<body>
+<h3>cafe security session</h3>
+<h4>카페 회원가입 페이지</h4>
+<form action="/join" method="post" name="f">
+<table border="1">
+	<tr>
+		<th>ID</th>
+		<td>
+			<input type="text" name="id" id="id">
+			<input type="button" value="중복체크" onclick="a()"><br/>
+			<span id="res"></span>
+		</td>
+	</tr>
+	<tr>
+		<th>PWD</th><td><input type="password" name="pwd"></td>
+	</tr>
+	<tr>
+		<th>NAME</th><td><input type="text" name="name"></td>
+	</tr>
+	<tr>
+		<th>EMAIL</th><td><input type="text" name="email"></td>
+	</tr>
+	<tr>
+		<th>TYPE</th>
+		<td>
+			<input type="radio" name="type" value="consumer" checked>구매자 
+			<input type="radio" name="type" value="seller">판매자  
+			<input type="radio" name="type" value="admin">관리자 
+		</td>
+	</tr>
+	<tr>
+		<th>JOIN</th><td><input type="submit" value="가입"></td>
+	</tr>
+</table>
+</form>
+<a href="/">홈</a><br/>
+</body>
+</html>

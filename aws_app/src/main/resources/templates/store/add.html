@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+</head>
+<body>
+<h3>cafe security session</h3>
+<h4>카페 매장 등록 요청 페이지</h4>
+<a href="/index_seller">판매자 홈으로</a><br/>
+<form action="/auth/store/add" method="post">
+STOREID:<input type="text" name="storeid" th:value="store_+${session.loginId }" readonly><br/>
+SID    :<input type="text" name="sid" th:value="${session.loginId }" readonly><br/>
+ADDRESS:<input type="text" name="address"><br/>
+<input type="submit" value="개설요청">
+</form>
+</body>
+</html>

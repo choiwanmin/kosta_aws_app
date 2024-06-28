@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
+<script type="text/javascript">
+$(document).ready(function(){
+	$.ajax({
+		url : '/auth/store/listajax',
+		type : 'get',
+		dataType : 'json',
+		success : function(res){
+			alert(res);
+			let txt = '';
+			for(let s of res.list) {
+				txt += '매장명:<a href="/auth/cafe/list?storeid='+s.storeid+'">'+s.storeid+ '</a> / 주소:'+s.address+'<br/>';
+			}
+			$('#slist').html(txt);
+			
+		},
+		error : function(){
+			alert('error');
+		}
+	});
+});
+
+
+// window.onload = () => {
+// 	const req = new XMLHttpRequest();
+// 	req.onload = () => {
+// 		let arr = JSON.parse(req.responseText);
+// 		let txt = '<table border="1">';
+// 		txt += '<tr><th>' + storeid + '</th><th>';
+// 		txt += sid + '</th><th>';
+// 		txt += address + '</th><th>';
+// 		txt += open + '</th><th></tr>';
+// 		for(let store in arr) {
+// 			txt += '<tr><th>' + store.storeid + '</th><th>'
+// 			txt += '<th>' + store.sid + '</th><th>'
+// 			txt += '<th>' + store.address + '</th><th>'
+// 			txt += '<th>' + store.open + '</th><th></tr>'
+// 		}
+// 		txt += '</table>'
+// 	}
+// 	document.getElementById('slist').innerHTML = txt;
+// 	req.open('get', '/auth/store/list');
+// 	req.send();
+// }
+
+</script>
+</head>
+<body>
+<h3>cafe security session</h3>
+<h4>구매자 페이지</h4>
+<div th:insert="~{header}"></div>
+ID  :<span th:text="${session.loginId }"></span> / 
+TYPE:<span th:text="${session.type }"></span><br/>
+
+<div id="slist"></div>
+<a href="/">홈</a><br/>
+</body>
+</html>

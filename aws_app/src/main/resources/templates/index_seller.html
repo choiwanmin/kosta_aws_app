@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
+<script type="text/javascript">
+$(document).ready(function(){
+	let sid = '[[${session.loginId}]]';
+	alert(sid);
+	$.ajax({
+		url : '/auth/store/getbysidajax',
+		type : 'get',
+		data : {sid:sid},
+		dataType : 'json',
+		success : function(res) {
+			alert(res.state);
+			if(res.state == 1) {
+				$('#div2').hide();
+			} else if(res.state == 2) {
+				$('#div1').show();
+				$('#div1').html('매장 개설이 완료되지 않았음');
+				$('#div2').hide();
+			} else if(res.state == 3) {
+				$('#div1').hide();
+			}
+		},
+		error : function() {
+			alert('error');
+		}
+	});
+});
+</script>
+</head>
+<body>
+<h3>cafe security session</h3>
+<h4>판매자 페이지</h4>
+<a href="/index_seller">판매자 홈으로</a><br/>
+<div th:insert="~{header}"></div>
+ID  :<span th:text="${session.loginId }"></span> / 
+TYPE:<span th:text="${session.type }"></span><br/>
+<div id="div1">
+<a href="/auth/store/add">매장등록</a>
+</div>
+<div id="div2">
+<a href="/auth/cafe/add">메뉴등록</a>
+<a th:href="@{/auth/cafe/list(storeid=${'store_'+session.loginId})}">메뉴목록</a>
+</div>
+</body>
+</html>

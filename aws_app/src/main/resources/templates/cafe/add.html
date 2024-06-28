@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+</head>
+<body>
+<h3>cafe security session</h3>
+<h3>카페 상품 등록 페이지</h3>
+<a href="/index_seller">판매자 홈으로</a><br/>
+<form action="/auth/cafe/add" method="post" enctype="multipart/form-data">
+name    :<input type="text" name="name"><br/>
+price   :<input type="number" name="price"><br/>
+prod img:<input type="file" name="f"><br/>
+<input type="text" name="store" th:value="store_+${session.loginId }" readonly><br/>
+<input type="submit" value="등록">
+</form>
+</body>
+</html>

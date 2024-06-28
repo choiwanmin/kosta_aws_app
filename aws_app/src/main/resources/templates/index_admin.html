@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+</head>
+<body>
+<h3>cafe security session</h3>
+<h4>관리자 페이지</h4>
+<a href="/index_admin">관리자 홈으로</a><br/>
+<div th:insert="~{header}"></div>
+ID  :<span th:text="${session.loginId }"></span> / 
+TYPE:<span th:text="${session.type }"></span><br/>
+
+<a href="/auth/store/list">매장목록</a><br/>
+</body>
+</html>
