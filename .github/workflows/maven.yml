@@ -1,0 +1,76 @@
+# This workflow will build a Java project with Maven, and cache/restore any dependencies to improve the workflow execution time
+# For more information see: https://docs.github.com/en/actions/automating-builds-and-tests/building-and-testing-java-with-maven
+
+# This workflow uses actions that are not certified by GitHub.
+# They are provided by a third-party and are governed by
+# separate terms of service, privacy policy, and support
+# documentation.
+
+name: Java CI with Maven
+
+on:
+  push:
+    branches: [ "master" ]
+  pull_request:
+    branches: [ "master" ]
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v4
+    - name: Set up JDK 17
+      uses: actions/setup-java@v3
+      with:
+        java-version: '17'
+        distribution: 'temurin'
+        cache: maven
+    
+      # maven빌드. 테스팅제외. 빌드 결과인 war파일 도커파일이 있는 위치로 복사
+      # pom.xml, Dockerfile 모두 프로젝트 루트에 있으므로 war 파일도 프로젝트 루트에 복사. 
+      # 여기에서 app2가 프로젝트 폴더명. war파일은 프로젝트 루트 밑에 target 폴더에 생성됨
+    - name: Build with Maven
+      run: mvn -Dmaven.test.skip=true -B package --file aws_app/pom.xml && cp aws_app/target/*.war aws_app # # 브랜치 병합 이후 테스트 하지 말것/패키지묶어라/프로젝트명(루트) && 복사/프로젝트 루트로 복
+
+      # Docker 이미지 빌드
+    - name: docker image build
+      run: cd aws_app && docker build -t choiwm512/repo1:aws_app . # # 이동 프로젝트로/도커 이미지 생성
+
+    # DockerHub 로그인
+    - name: docker login
+      uses: docker/login-action@v2
+      with:
+        username: ${{ secrets.DOCKERHUB_USERNAME }}
+        password: ${{ secrets.DOCKERHUB_PASSWORD }}
+
+    # Docker Hub 이미지 푸시
+    - name: docker Hub push
+      run: docker push choiwm512/repo1:aws_app #
+
+    # aws에 접속하여 도커허브에서 이미지 다운받아 실행
+    - name: Deploy
+      uses: appleboy/ssh-action@master
+      with:
+        host: 43.202.58.14      #aws ip
+        port: 22		#ssh 포트
+        username: ubuntu	#ec2 사용자. aws에서 whoami 명령 실행으로 확인. 명령라인 맨 앞에서 써있음
+        key: ${{ secrets.PRIVATE_KEY }} # pem 키. ec2 생성시 public 키 생성하여 다운로드 받은 ~.pem 파일을 메모장으로 열어 그 안의 모든 내용 복사해서 변수 값으로 등록
+        # 도커 작업
+        script: |
+          sudo docker container stop aws_app # 컨테이너 종료
+          sudo docker container rm aws_app # 컨테이너 삭제
+          sudo docker rmi choiwm512/repo1:aws_app # # 이미지 삭제
+          sudo docker pull choiwm512/repo1:aws_app # # 이미지 다시 다운로드
+          sudo docker run -p 8081:8081 --name aws_app choiwm512/repo1:aws_app # # 실행
+    
+    # - name: Build with Maven
+    # run: mvn -B package --file pom.xml
+      
+
+    # Optional: Uploads the full dependency graph to GitHub to improve the quality of Dependabot alerts this repository can receive
+    # - name: Update dependency graph
+    # uses: advanced-security/maven-dependency-submission-action@571e99aab1055c2e71a1e2309b9691de18d6b7d6
+
+    
