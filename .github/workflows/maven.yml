@@ -63,7 +63,7 @@ jobs:
           sudo docker container rm aws_app # 컨테이너 삭제
           sudo docker rmi -f choiwm512/repo1:aws_app # # 이미지 삭제
           sudo docker pull choiwm512/repo1:aws_app # # 이미지 다시 다운로드
-          sudo docker run -p 8081:8081 --name aws_app choiwm512/repo1:aws_app # # 실행
+          sudo docker run -p 8081:8081 --name aws_app -v /cafeimg:/cafeimg choiwm512/repo1:aws_app # # 실행 볼륨/실제디스크/
     
     # - name: Build with Maven
     # run: mvn -B package --file pom.xml
