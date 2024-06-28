@@ -61,7 +61,7 @@ jobs:
         script: |
           sudo docker container stop aws_app # 컨테이너 종료
           sudo docker container rm aws_app # 컨테이너 삭제
-          sudo docker rmi choiwm512/repo1:aws_app # # 이미지 삭제
+          sudo docker rmi -f choiwm512/repo1:aws_app # # 이미지 삭제
           sudo docker pull choiwm512/repo1:aws_app # # 이미지 다시 다운로드
           sudo docker run -p 8081:8081 --name aws_app choiwm512/repo1:aws_app # # 실행
     
